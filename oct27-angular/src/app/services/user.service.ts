@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { User } from '../model/user.model';
 import { LogRequest } from '../model/logRequest.model';
+import { UpdateUser } from '../model/updateUser.model';
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import { LogRequest } from '../model/logRequest.model';
 })
 export class UserService {
   confirmUserUpdate(user: User) {
-    return this.http.post(`${this.baseUrl}/admin/update`, user);
+    return this.http.put(`${this.baseUrl}/admin/update`, user);
   }
 
   addUser(user: any): Observable<any> {
@@ -22,7 +23,17 @@ export class UserService {
   }
 
   getUpdateUsersList(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.baseUrl}/admin/updateList`);
+    return this.http.get<UpdateUser[]>(`${this.baseUrl}/admin/updateList`).pipe(
+        map(updateUsers => updateUsers.map(updateUser => ({
+            ...updateUser,
+            id: updateUser.userId
+        })))
+    );
+}
+
+  getUserInfoById(id: number) : Observable<any> {
+    const url = `${this.baseUrl}/user/${id}`
+    return this.http.get<User>(url);
   }
 
   login(logRequest: LogRequest): Observable<User> {

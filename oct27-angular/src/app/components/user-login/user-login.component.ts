@@ -27,6 +27,17 @@ export class UserLoginComponent implements OnInit {
   ngOnInit(): void {
     // check
     this.loggedIn = this.authService.isLoggedIn;
+    if (this.loggedIn) {  //logged in
+
+      const userId = this.authService.getUserId();
+      if(userId != null){
+        this.userService.getUserInfoById(userId).subscribe(userInfo => {
+                  this.user = userInfo; // 假设您的服务返回一个User对象
+              }, error => {
+                  console.error('获取用户信息失败:', error);
+              });
+      }
+  }
   }
 
   onLogin(): void {
@@ -36,10 +47,11 @@ export class UserLoginComponent implements OnInit {
     };
 
     this.userService.login(logRequest).subscribe(response => {
-      if (response !== null) {
+      if (response !== null && response.id !== undefined) {
         this.user = response; // store user object
         this.loggedIn = true;
-        this.authService.login(); 
+        const userId: number = response.id;
+        this.authService.login(userId); 
       } else {
         alert('login failed');
       }

@@ -4,6 +4,7 @@ import com.oct27.Model.User;
 import com.oct27.Request.LogRequest;
 import com.oct27.Response.CommonResponse;
 import com.oct27.Service.UserService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,18 @@ public class UserController {
             userService.createUser(logRequest);
             response.setMessage("user created");
             return ResponseEntity.ok(response);
+        }catch (Exception e){
+            response.setMessage( e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id){
+        CommonResponse response = new CommonResponse();
+        try{
+            response.setMessage("user found");
+            return ResponseEntity.ok(userService.getUserById(id));
         }catch (Exception e){
             response.setMessage( e.getMessage());
             return ResponseEntity.badRequest().body(response);

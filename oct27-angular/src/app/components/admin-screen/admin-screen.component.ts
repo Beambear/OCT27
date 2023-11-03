@@ -12,6 +12,10 @@ export class AdminScreenComponent {
 
   onUserCreated() {
     this.userListComponent.getUserList();
-}
+  }
+
+  onUserConfirmed() {
+    this.userListComponent.getUserList();
+  }
 
 }
