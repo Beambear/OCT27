@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ViewChild } from '@angular/core';
+
 
 @Component({
   selector: 'app-admin-screen',
@@ -6,5 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin-screen.component.css']
 })
 export class AdminScreenComponent {
+  @ViewChild('userListComponentRef', { static: false }) userListComponent: any;
+
+  onUserCreated() {
+    this.userListComponent.getUserList();
+}
 
 }

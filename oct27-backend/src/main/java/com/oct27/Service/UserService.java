@@ -88,8 +88,23 @@ public class UserService {
         });
     }
 
-    public Boolean login(LogRequest logRequest) {
-        Optional<User> user = userRepo.loginUser(logRequest.getEmail(),logRequest.getPassword());
-        return user.isPresent();
+    public User login(LogRequest logRequest) {
+        Optional<User> optionalUser = userRepo.findByEmail(logRequest.getEmail());
+
+        // find user
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // match password or null password
+            if (user.getPassword() == null || user.getPassword().equals(logRequest.getPassword())) {
+                // set password if null
+                if (user.getPassword() == null) {
+                    user.setPassword(logRequest.getPassword());
+                    userRepo.save(user);
+                }
+                return user;
+            }
+        }
+        return null;
     }
 }

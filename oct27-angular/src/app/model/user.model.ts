@@ -3,7 +3,7 @@ export class User {
       public id?: number,
       public name?: string,
       public email?: string,
-      public mobile?: string,
+      public phone?: string,
       public profilePic?: string
     ) {}
   }

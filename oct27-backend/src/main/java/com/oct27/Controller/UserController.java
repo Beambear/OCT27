@@ -1,5 +1,6 @@
 package com.oct27.Controller;
 
+import com.oct27.Model.User;
 import com.oct27.Request.LogRequest;
 import com.oct27.Response.CommonResponse;
 import com.oct27.Service.UserService;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @PostMapping("user/login")
-    public Boolean login(@RequestBody LogRequest logRequest){
+    public User login(@RequestBody LogRequest logRequest){
         return userService.login(logRequest);
     }
 

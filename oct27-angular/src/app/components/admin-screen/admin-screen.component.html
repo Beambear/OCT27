@@ -3,17 +3,17 @@
 <div >
 
   <div class="box" name="user-form">
-    <app-user-form></app-user-form>
+    <app-user-form (userCreated)="onUserCreated()"></app-user-form>
   </div>
   
   <div class="container" name="lists">
 
     <div class="half" name="user-list">
-      list
+      <app-user-list #userListComponentRef></app-user-list>
     </div>
 
     <div class="half" name="user-update-list">
-      update list
+      <app-user-update-list></app-user-update-list>
     </div>
 
   </div>

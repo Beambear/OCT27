@@ -12,6 +12,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { UserLoginComponent } from './components/user-login/user-login.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
     UserScreenComponent,
     AdminScreenComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    UserLoginComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/services/user.service';
 
@@ -11,6 +12,8 @@ import { UserService } from 'src/app/services/user.service';
 export class UserFormComponent implements OnInit {
 
   user: User = new User();
+  @Output() userCreated = new EventEmitter<void>();
+
 
   constructor(private userService: UserService) { }
 
@@ -31,6 +34,7 @@ export class UserFormComponent implements OnInit {
   createUser() {
     this.userService.addUser(this.user).subscribe(
       response => {
+        this.userCreated.emit();
         console.log('User created successfully:', response);
         // Handle success scenario here
       },

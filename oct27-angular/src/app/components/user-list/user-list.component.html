@@ -1,1 +1,26 @@
-<p>user-list works!</p>
+
+<h2>User List</h2>
+
+<div class="search-box">
+    <input type="text" [(ngModel)]="searchKey" (ngModelChange)="onSearch()" placeholder="Search by name, email, phone"/>
+    <!-- <button (click)="onSearch()">Search</button> -->
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of filteredUsers">
+      <td>{{ user.id }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.phone }}</td>
+    </tr>
+  </tbody>
+</table>
