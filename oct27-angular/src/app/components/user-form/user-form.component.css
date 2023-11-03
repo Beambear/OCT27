@@ -1,0 +1,9 @@
+.user-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* at center */
+}
+
+.user-form .form-group {
+    margin: 5px 0; /* top bot 5 px */
+}
