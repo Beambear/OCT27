@@ -8,6 +8,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins ="*")
@@ -69,10 +70,11 @@ public class UserController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<?> addUser(@RequestBody LogRequest logRequest){
+    public ResponseEntity<?> addUser(@RequestBody LogRequest userRequest,
+                                     @RequestParam("profileImage") MultipartFile profileImage){
         CommonResponse response = new CommonResponse();
         try{
-            userService.createUser(logRequest);
+            userService.createUser(userRequest,profileImage);
             response.setMessage("user created");
             return ResponseEntity.ok(response);
         }catch (Exception e){
@@ -85,7 +87,7 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         CommonResponse response = new CommonResponse();
         try{
-            response.setMessage("user found");
+            response.setMessage("user ");
             return ResponseEntity.ok(userService.getUserById(id));
         }catch (Exception e){
             response.setMessage( e.getMessage());

@@ -14,9 +14,11 @@ export class UserService {
     return this.http.put(`${this.baseUrl}/admin/update`, user);
   }
 
-  addUser(user: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/create`, user);
+  //send userRequest & file for avatar picture
+  addUser(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/create`, formData);
   }
+
 
   getUserList(): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseUrl}/admin/userList`);

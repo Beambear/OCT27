@@ -21,6 +21,7 @@ public class UserUpdate {
     private String phone;
     @JsonIgnore
     private String password;
+    private String avatarUrl;
     private long userId;
     private int confirmed;
 }
