@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { LogRequest } from 'src/app/model/logRequest.model';
+import { UpdateUser } from 'src/app/model/updateUser.model';
 import { User } from 'src/app/model/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
@@ -17,7 +18,7 @@ export class UserLoginComponent implements OnInit {
   loggedIn = false;  // defualt is false
   editing = false;
   public user: User | null = null;
-  public updateUser: User | null = null;
+  public updateUser: UpdateUser | null = null;
   
   constructor(
     private userService: UserService,
@@ -32,9 +33,9 @@ export class UserLoginComponent implements OnInit {
       const userId = this.authService.getUserId();
       if(userId != null){
         this.userService.getUserInfoById(userId).subscribe(userInfo => {
-                  this.user = userInfo; // 假设您的服务返回一个User对象
+                  this.user = userInfo;
               }, error => {
-                  console.error('获取用户信息失败:', error);
+                  console.error('Failed get user info:', error);
               });
       }
   }

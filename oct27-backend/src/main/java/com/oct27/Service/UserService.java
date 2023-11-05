@@ -40,6 +40,7 @@ public class UserService {
             update.setName(logRequest.getName());
             update.setEmail(logRequest.getEmail());
             update.setPhone(logRequest.getPhone());
+            update.setPassword(logRequest.getPassword());
             update.setConfirmed(0);
             userUpdateRepo.save(update);
         }catch ( Exception e ){
