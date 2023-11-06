@@ -30,9 +30,10 @@
     </li>
     <li *ngIf="editing && updateUser">
       <strong>Password:</strong> 
-      <input [(ngModel)]="password" type="password">
+      <input [(ngModel)]="updateUser.password" type="password">
     </li>
   </ul>
   <button (click)="toggleEdit()">{{ editing ? 'Save' : 'Edit' }}</button>
+  <button (click)="logOff()">Log Off</button>
 </div>
 

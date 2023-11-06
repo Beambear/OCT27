@@ -48,25 +48,26 @@ public class UserService {
         }
     }
 
-    public void confirmUserUpdate(LogRequest logRequest) {
-        long id = logRequest.getId();
+    public void confirmUserUpdate(UserUpdate userUpdate) {
+        long userId = userUpdate.getUserId();
+        long updateId = userUpdate.getId();
+        int confirmedCode = userUpdate.getConfirmed();
+        //dbUser
+        User dbUser = userRepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("No user found with id: " + userId));
+        //dbUpdate
+        UserUpdate dbUpdate = userUpdateRepo.findById(updateId)
+                .orElseThrow(() -> new NoSuchElementException("No update found for user with id: " + updateId));
 
-        User actualUser = userRepo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No user found with id: " + id));
-
-        UserUpdate actualUpdate = userUpdateRepo.findByUserId(id)
-                .orElseThrow(() -> new NoSuchElementException("No update found for user with id: " + id));
-
-        actualUser.setName(actualUpdate.getName());
-        actualUser.setPhone(actualUpdate.getPhone());
-        actualUser.setPassword(actualUpdate.getPassword());
-        actualUser.setEmail(actualUpdate.getEmail());
-
+        dbUser.setName(dbUpdate.getName());
+        dbUser.setPhone(dbUpdate.getPhone());
+        dbUser.setPassword(dbUpdate.getPassword() == null ? dbUser.getPassword() : dbUpdate.getPassword());
+        dbUser.setEmail(dbUpdate.getEmail());
         //save user
-        userRepo.save(actualUser);
+        userRepo.save(dbUser);
         //save update info
-        actualUpdate.setConfirmed(1);
-        userUpdateRepo.save(actualUpdate);
+        dbUpdate.setConfirmed(confirmedCode);
+        userUpdateRepo.save(dbUpdate);
     }
 
 

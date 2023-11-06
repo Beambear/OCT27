@@ -11,12 +11,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of usersToUpdate">
-        <td><button (click)="confirmUpdate(user)">Confirm</button></td>
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phone }}</td>
+      <tr *ngFor="let updateUser of updateUserList">
+        <td>
+          <button (click)="confirmUpdate(updateUser)">Confirm</button>
+          <button (click)="declineUpdate(updateUser)">Decline</button>
+        </td>
+        <td>{{ updateUser.userId }}</td>
+        <td>{{ updateUser.name }}</td>
+        <td>{{ updateUser.email }}</td>
+        <td>{{ updateUser.phone }}</td>
       </tr>
     </tbody>
   </table>

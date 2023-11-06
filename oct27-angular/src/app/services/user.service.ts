@@ -10,7 +10,7 @@ import { UpdateUser } from '../model/updateUser.model';
   providedIn: 'root'
 })
 export class UserService {
-  confirmUserUpdate(user: User) {
+  confirmUserUpdate(user: UpdateUser) {
     return this.http.put(`${this.baseUrl}/admin/update`, user);
   }
 
@@ -26,7 +26,7 @@ export class UserService {
     return this.http.get<UpdateUser[]>(`${this.baseUrl}/admin/updateList`).pipe(
         map(updateUsers => updateUsers.map(updateUser => ({
             ...updateUser,
-            id: updateUser.userId
+            // id: updateUser.userId
         })))
     );
 }

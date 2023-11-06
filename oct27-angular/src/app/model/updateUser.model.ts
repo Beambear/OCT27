@@ -5,7 +5,9 @@ export class UpdateUser {
       public email?: string,
       public phone?: string,
       public profilePic?: string,
-      public userId?: number
+      public password?: string,
+      public userId?: number,
+      public confirmed?: number
     ) {}
   }
   

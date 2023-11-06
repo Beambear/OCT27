@@ -41,6 +41,13 @@ export class UserLoginComponent implements OnInit {
   }
   }
 
+  logOff(): void{
+    this.authService.logout;
+    this.loggedIn = false;
+    this.updateUser = null;
+    this.password = "";
+  }
+
   onLogin(): void {
     const logRequest: LogRequest = {
       email: this.email,

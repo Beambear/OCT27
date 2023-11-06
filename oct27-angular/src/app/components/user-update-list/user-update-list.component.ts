@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { UpdateUser } from 'src/app/model/updateUser.model';
 import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/services/user.service';
 
@@ -10,22 +11,44 @@ import { UserService } from 'src/app/services/user.service';
 export class UserUpdateListComponent {
 
 
-  usersToUpdate: User[] = [];
-  @Output() userConfirmed: EventEmitter<User> = new EventEmitter<User>();
+  updateUserList: UpdateUser[] = [];
+  @Output() userConfirmed: EventEmitter<UpdateUser> = new EventEmitter<UpdateUser>();
 
   constructor(private userService: UserService) { }
 
-  confirmUpdate(user: User) {
+  declineUpdate(updateUser: UpdateUser) {
     // send update request to back-end
-    this.userService.confirmUserUpdate(user).subscribe(
+    updateUser.confirmed = 2;
+    this.userService.confirmUserUpdate(updateUser).subscribe(
       response => {
         // remove confirmed user
-        const index = this.usersToUpdate.indexOf(user);
+        const index = this.updateUserList.indexOf(updateUser);
         if (index > -1) {
-          this.usersToUpdate.splice(index, 1);
+          this.updateUserList.splice(index, 1);
         }
         //trigger event
-        this.userConfirmed.emit(user);
+        this.userConfirmed.emit(updateUser);
+      },
+      error => {
+        console.error("Error during API call:", error);
+        alert("Error during API call. Check the console for more details.");
+      }
+    );
+    
+  }
+
+  confirmUpdate(updateUser: UpdateUser) {
+    // send update request to back-end
+    updateUser.confirmed = 1;
+    this.userService.confirmUserUpdate(updateUser).subscribe(
+      response => {
+        // remove confirmed user
+        const index = this.updateUserList.indexOf(updateUser);
+        if (index > -1) {
+          this.updateUserList.splice(index, 1);
+        }
+        //trigger event
+        this.userConfirmed.emit(updateUser);
       },
       error => {
         console.error("Error during API call:", error);
@@ -38,7 +61,7 @@ export class UserUpdateListComponent {
 
   ngOnInit() {
     this.userService.getUpdateUsersList().subscribe(dbList => {
-      this.usersToUpdate = dbList;
+      this.updateUserList = dbList;
     });
   }
 

@@ -1,6 +1,7 @@
 package com.oct27.Controller;
 
 import com.oct27.Model.User;
+import com.oct27.Model.UserUpdate;
 import com.oct27.Request.LogRequest;
 import com.oct27.Response.CommonResponse;
 import com.oct27.Service.UserService;
@@ -25,10 +26,10 @@ public class UserController {
     }
 
     @PutMapping("/admin/update")
-    public ResponseEntity<?> confirmUpdate(@RequestBody LogRequest logRequest){
+    public ResponseEntity<?> confirmUpdate(@RequestBody UserUpdate userUpdate){
         CommonResponse response = new CommonResponse();
         try{
-            userService.confirmUserUpdate(logRequest);
+            userService.confirmUserUpdate(userUpdate);
             response.setMessage("update confirmed");
             return ResponseEntity.ok(response);
         } catch ( Exception e){
