@@ -82,10 +82,10 @@ public class UserService {
     }
 
     public void setPassword(LogRequest logRequest) {
-        Optional<User> user = userRepo.findById(logRequest.getId());
+        Optional<User> dbUser = userRepo.findById(logRequest.getId());
 
-        user.ifPresentOrElse(actualUser -> {
-            actualUser.setPassword(logRequest.getPassword());
+        dbUser.ifPresentOrElse(u -> {
+            u.setPassword(logRequest.getPassword());
         }, () -> {
             throw new NoSuchElementException("No user found ");
         });
@@ -113,5 +113,30 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepo.findById(id).get();
+    }
+
+    //save avatar filename to db
+    public void saveUserAvatar(Long userId, String avatarName) {
+        Optional<User> dbUser = userRepo.findById(userId);
+        dbUser.ifPresentOrElse(u ->{
+            u.setAvatarName(avatarName);
+            userRepo.save(u);
+        }, () ->{
+            throw new NoSuchElementException("No user found ");
+        });
+    }
+
+    public void saveUpdateUserAvatar(Long userId, String avatarName) {
+        Optional<UserUpdate> dbUpdate = userUpdateRepo.findByUserId(userId);
+        dbUpdate.ifPresentOrElse(u->{
+            u.setAvatarName(avatarName);
+            userUpdateRepo.save(u);
+        }, ()->{
+            throw new NoSuchElementException("No user found ");
+        });
+    }
+
+    public Object getUserByEmail(String email) {
+        return userRepo.findByEmail(email);
     }
 }

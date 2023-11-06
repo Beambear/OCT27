@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { LogRequest } from 'src/app/model/logRequest.model';
 import { UpdateUser } from 'src/app/model/updateUser.model';
 import { User } from 'src/app/model/user.model';
@@ -17,14 +18,31 @@ export class UserLoginComponent implements OnInit {
   password?: string;
   loggedIn = false;  // defualt is false
   editing = false;
-  public user: User | null = null;
-  public updateUser: UpdateUser | null = null;
+  user: User | null = null;
+  updateUser: UpdateUser | null = null;
+  avatarUrl: any;
+  selectedFile: File | null = null;
+
   
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private sanitizer: DomSanitizer
     ) { } 
 
+
+  loadAvatar(): void {
+    if (this.user && this.user.avatarName) {
+      this.userService.getAvatar(this.user.avatarName).subscribe(file => {
+        const objectURL = URL.createObjectURL(file);
+        this.avatarUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+      }, error => {
+        console.error('Error loading avatar:', error);
+      });
+    }
+  }
+    
+    
   ngOnInit(): void {
     // check
     this.loggedIn = this.authService.isLoggedIn;
@@ -34,6 +52,7 @@ export class UserLoginComponent implements OnInit {
       if(userId != null){
         this.userService.getUserInfoById(userId).subscribe(userInfo => {
                   this.user = userInfo;
+                  this.loadAvatar();
               }, error => {
                   console.error('Failed get user info:', error);
               });

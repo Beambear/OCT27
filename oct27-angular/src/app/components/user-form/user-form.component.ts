@@ -23,26 +23,52 @@ export class UserFormComponent implements OnInit {
 
   selectedFile: File | null = null;
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
+  uploadUserAvatar(userId: number): void {
+    if (this.selectedFile) {
+      this.userService.postAvatar(this.selectedFile, userId, 1).subscribe(
+        response => {
+          console.log('Avatar uploaded successfully', response);
+        },
+        error => {
+          console.error('Error uploading avatar', error);
+        }
+      );
+    }
+  }
 
-    if (input.files && input.files.length) {
-        this.selectedFile = input.files[0];
+  onFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      this.selectedFile = fileList[0];
     }
   }
 
   createUser() {
     this.userService.addUser(this.user).subscribe(
       response => {
-        this.userCreated.emit();
         console.log('User created successfully:', response);
-        // Handle success scenario here
+        // User has been created,  get the user info
+        this.userService.getUserInfoByEmail(this.user.email).subscribe(
+          userInfo => {
+            if (userInfo && userInfo.id !== undefined) {
+              //have the user ID, upload the avatar
+              this.uploadUserAvatar(userInfo.id);
+            } else {
+              // Handle the case where user info is not returned properly
+              console.error('User info not returned or missing ID');
+            }
+          },
+          error => {
+            console.error('Unable to get user info', error);
+          }
+        );
       },
       error => {
         console.error('Error creating user:', error);
-        // Handle error scenario here
       }
     );
   }
+  
   
 }

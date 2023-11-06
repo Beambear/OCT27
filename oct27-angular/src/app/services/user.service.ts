@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { User } from '../model/user.model';
 import { LogRequest } from '../model/logRequest.model';
@@ -10,6 +10,24 @@ import { UpdateUser } from '../model/updateUser.model';
   providedIn: 'root'
 })
 export class UserService {
+  getUserInfoByEmail(email: string | undefined) {
+    const url = `${this.baseUrl}/user/email/${email}`
+    return this.http.get<User>(url);
+  }
+
+  getAvatar(avatarName: string) {
+    return this.http.get(`${this.baseUrl}/avatarFile/avatarName`, {responseType:'blob'});
+  }
+
+  postAvatar(file:File, userId:number, type: number): Observable<any>{  //type 1 = saveUser, type = saveUpdateUser
+    const formData = new FormData();
+    formData.append('avatarFile', file, file.name);//append file
+    formData.append('userId', userId.toString());  //set userId
+    formData.append('type', type.toString());  //set save type
+
+    return this.http.post(`${this.baseUrl}/avatarFile`,formData)
+  }
+
   confirmUserUpdate(user: UpdateUser) {
     return this.http.put(`${this.baseUrl}/admin/update`, user);
   }

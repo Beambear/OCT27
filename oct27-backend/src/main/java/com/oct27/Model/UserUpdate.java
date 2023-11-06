@@ -22,4 +22,5 @@ public class UserUpdate {
     private String password;
     private long userId;
     private int confirmed;
+    private String avatarName;
 }
