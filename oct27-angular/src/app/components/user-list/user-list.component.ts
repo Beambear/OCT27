@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { User } from 'src/app/model/user.model';
 import { UserService } from 'src/app/services/user.service';
 
@@ -11,18 +12,44 @@ export class UserListComponent implements OnInit {
 
   userList: User[] = [];
   filteredUsers: User[] = [];
+  avatarSrcs: string[] = []; 
   searchKey: string = '';
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private sanitizer: DomSanitizer
+    ) { }
 
   ngOnInit(): void {
     this.getUserList();
   }
 
+  loadAvatarsForUsers(users: User[]): void {
+    // inite avatarSrcs
+    this.avatarSrcs = new Array(users.length);
+    
+    users.forEach((user, index) => {
+      if (user && user.avatarName) {
+        this.userService.getAvatar(user.avatarName).subscribe({
+          next: (file: Blob) => {
+            const objectURL = URL.createObjectURL(file);
+            this.avatarSrcs[index] = this.sanitizer.bypassSecurityTrustUrl(objectURL) as string;
+          },
+          error: (error) => {
+            console.error(`Error loading avatar for user ${user.id}:`, error);
+          }
+        });
+      }
+    });
+  }
+  
+  
+
   getUserList(): void {
     this.userService.getUserList().subscribe(users => {
       this.userList = users;
       this.filteredUsers = users; // default search -> display all
+      this.loadAvatarsForUsers(this.filteredUsers); // load avatar for usrs
     }, error => {
       console.error('Error fetching user list:', error);
     });
@@ -30,7 +57,7 @@ export class UserListComponent implements OnInit {
 
   onSearch(): void {
     if (!this.searchKey) {
-      this.filteredUsers = this.userList; // 如果搜索关键字为空，则显示所有用户
+      this.filteredUsers = this.userList; // display all if no search
     } else {
       this.filteredUsers = this.userList.filter(user => 
         user.name?.includes(this.searchKey) || 
