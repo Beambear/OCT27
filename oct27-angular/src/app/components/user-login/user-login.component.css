@@ -1,0 +1,5 @@
+.avatar-image {
+    width: 150px; /* width */
+    height: 150px; /* heightt */
+    object-fit: cover; /* keep ratio */
+  }

@@ -11,4 +11,6 @@ public interface IUserUpdateRepo extends JpaRepository<UserUpdate,Long> {
      Optional<UserUpdate> findByUserId(Long id);
 
      List<UserUpdate> findByConfirmed(int i);
+
+     Optional<UserUpdate> findByUserIdAndConfirmed(Long userId, Integer confirmed);
 }

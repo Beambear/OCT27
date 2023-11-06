@@ -13,8 +13,14 @@
   <h3>User information</h3>
   <ul>
     <div *ngIf="avatarSrc">
-      <img [src]="avatarSrc" alt="User Avatar">
+      <img class="avatar-image" [src]="avatarSrc" alt="User Avatar">
     </div>
+    <form *ngIf="editing && updateUser">
+      <div class="form-group">
+        <label for="profilePic">Profile Picture:</label>
+        <input type="file" id="profilePic" (change)="onFileSelected($event)">
+      </div>
+    </form>
     <li><strong>ID:</strong> {{ user?.id }}</li>
     <li>
       <strong>Name:</strong> 
@@ -37,7 +43,7 @@
     </li>
   </ul>
   <button (click)="toggleEdit()">{{ editing ? 'Save' : 'Edit' }}</button>
-  <button (click)="logOff()">Log Off</button>
+  <button *ngIf="!editing" (click)="logOff()">Log Off</button>
   <button *ngIf="editing" (click)="cancelEdit()">Cancel</button>
 </div>
 

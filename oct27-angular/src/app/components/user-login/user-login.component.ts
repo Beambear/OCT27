@@ -21,7 +21,8 @@ export class UserLoginComponent implements OnInit {
   user: User | null = null;
   updateUser: UpdateUser | null = null;
   avatarSrc: string | null = null;
-  
+  selectedFile: File | null = null;
+
   
   constructor(
     private userService: UserService,
@@ -29,23 +30,6 @@ export class UserLoginComponent implements OnInit {
     private sanitizer: DomSanitizer
     ) { } 
 
-
-    loadAvatar(): void {
-      console.log('loadAvatar called'); // log
-      if (this.user && this.user.avatarName) {
-        this.userService.getAvatar(this.user.avatarName).subscribe({
-          next: (file: Blob) => {
-            const objectURL = URL.createObjectURL(file);
-            this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL) as string;
-          },
-          error: (error) => {
-            console.error('Error loading avatar:', error);
-          }
-        });
-      }
-    }
-    
-    
   ngOnInit(): void {
     // check
     this.loggedIn = this.authService.isLoggedIn;
@@ -63,12 +47,47 @@ export class UserLoginComponent implements OnInit {
   }
   }
 
+  loadAvatar(): void {
+    console.log('loadAvatar called'); // log
+    if (this.user && this.user.avatarName) {
+      this.userService.getAvatar(this.user.avatarName).subscribe({
+        next: (file: Blob) => {
+          const objectURL = URL.createObjectURL(file);
+          this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL) as string;
+        },
+        error: (error) => {
+          console.error('Error loading avatar:', error);
+        }
+      });
+    }
+  }
+  uploadUserAvatar(userId: number): void {
+    if (this.selectedFile) {
+      this.userService.postAvatar(this.selectedFile, userId, 2).subscribe(
+        response => {
+          console.log('Avatar uploaded successfully', response);
+        },
+        error => {
+          console.error('Error uploading avatar', error);
+        }
+      );
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      this.selectedFile = fileList[0];
+    }
+  }
+
   cancelEdit() :void{
     this.editing = !this.editing;
   }
 
   logOff(): void{
-    this.authService.logout;
+    this.authService.logout();
     this.loggedIn = false;
     this.updateUser = null;
     this.password = "";
@@ -105,12 +124,18 @@ export class UserLoginComponent implements OnInit {
   }
 
   saveChanges(): void {
+    console.log('saveChanges is called'); // log
     if (this.updateUser) {
-        this.userService.submitUpdate(this.updateUser).subscribe(response => {
-            alert('Changes saved! Wait for admin confirmation.');
-        }, error => {
-            console.error('Error submitting update:', error);
-        });
+      
+      this.userService.submitUpdate(this.updateUser).subscribe(response => {
+        const userId = this.authService.getUserId();
+      if(userId != null){
+        this.uploadUserAvatar(userId);
+      }
+        alert('Changes saved! Wait for admin confirmation.');
+      }, error => {
+          console.error('Error submitting update:', error);
+      });
     }
 }
 

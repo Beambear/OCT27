@@ -34,18 +34,26 @@ public class UserService {
     }
 
     public void createUpdateUser(LogRequest logRequest) {
-        UserUpdate update = new UserUpdate();
-        try{
-            update.setUserId(logRequest.getId());
+        Long id = logRequest.getId();
+        Optional<UserUpdate> dbUpdate = userUpdateRepo.findByUserIdAndConfirmed(id, 0);
+        dbUpdate.ifPresentOrElse(update->{  //no duplicate new update info
             update.setName(logRequest.getName());
             update.setEmail(logRequest.getEmail());
             update.setPhone(logRequest.getPhone());
             update.setPassword(logRequest.getPassword());
             update.setConfirmed(0);
             userUpdateRepo.save(update);
-        }catch ( Exception e ){
-            throw e;
-        }
+        }, ()->{
+            UserUpdate update = new UserUpdate();
+            update.setUserId(id);
+            update.setName(logRequest.getName());
+            update.setEmail(logRequest.getEmail());
+            update.setPhone(logRequest.getPhone());
+            update.setPassword(logRequest.getPassword());
+            update.setConfirmed(0);
+            userUpdateRepo.save(update);
+        });
+
     }
 
     public void confirmUserUpdate(UserUpdate userUpdate) {
@@ -63,6 +71,7 @@ public class UserService {
         dbUser.setPhone(dbUpdate.getPhone());
         dbUser.setPassword(dbUpdate.getPassword() == null ? dbUser.getPassword() : dbUpdate.getPassword());
         dbUser.setEmail(dbUpdate.getEmail());
+        dbUser.setAvatarName(dbUpdate.getAvatarName());
         //save user
         userRepo.save(dbUser);
         //save update info
@@ -127,7 +136,7 @@ public class UserService {
     }
 
     public void saveUpdateUserAvatar(Long userId, String avatarName) {
-        Optional<UserUpdate> dbUpdate = userUpdateRepo.findByUserId(userId);
+        Optional<UserUpdate> dbUpdate = userUpdateRepo.findByUserIdAndConfirmed(userId,0);
         dbUpdate.ifPresentOrElse(u->{
             u.setAvatarName(avatarName);
             userUpdateRepo.save(u);

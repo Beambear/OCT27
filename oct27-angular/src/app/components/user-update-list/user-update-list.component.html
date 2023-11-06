@@ -5,18 +5,22 @@
       <tr>
         <th>Action</th>
         <th>UserID</th>
+        <th>Avatar</th>
         <th>Name</th>
         <th>Email</th>
         <th>Phone</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let updateUser of updateUserList">
+      <tr *ngFor="let updateUser of updateUserList; let i = index">
         <td>
           <button (click)="confirmUpdate(updateUser)">Confirm</button>
           <button (click)="declineUpdate(updateUser)">Decline</button>
         </td>
         <td>{{ updateUser.userId }}</td>
+        <td>
+          <img class="avatar-image" *ngIf="avatarSrcs[i]" [src]="avatarSrcs[i]" alt="N/A">
+        </td>
         <td>{{ updateUser.name }}</td>
         <td>{{ updateUser.email }}</td>
         <td>{{ updateUser.phone }}</td>
