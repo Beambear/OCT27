@@ -28,6 +28,7 @@ export class UserFormComponent implements OnInit {
       this.userService.postAvatar(this.selectedFile, userId, 1).subscribe(
         response => {
           console.log('Avatar uploaded successfully', response);
+          this.userCreated.emit();
         },
         error => {
           console.error('Error uploading avatar', error);
@@ -68,7 +69,5 @@ export class UserFormComponent implements OnInit {
         console.error('Error creating user:', error);
       }
     );
-  }
-  
-  
+  }  
 }
