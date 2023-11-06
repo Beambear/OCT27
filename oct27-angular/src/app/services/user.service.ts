@@ -16,7 +16,7 @@ export class UserService {
   }
 
   getAvatar(avatarName: string) {
-    return this.http.get(`${this.baseUrl}/avatarFile/avatarName`, {responseType:'blob'});
+    return this.http.get(`${this.baseUrl}/avatarFile/${avatarName}`, {responseType:'blob'});
   }
 
   postAvatar(file:File, userId:number, type: number): Observable<any>{  //type 1 = saveUser, type = saveUpdateUser

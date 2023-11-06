@@ -20,9 +20,8 @@ export class UserLoginComponent implements OnInit {
   editing = false;
   user: User | null = null;
   updateUser: UpdateUser | null = null;
-  avatarUrl: any;
-  selectedFile: File | null = null;
-
+  avatarSrc: string | null = null;
+  
   
   constructor(
     private userService: UserService,
@@ -31,16 +30,20 @@ export class UserLoginComponent implements OnInit {
     ) { } 
 
 
-  loadAvatar(): void {
-    if (this.user && this.user.avatarName) {
-      this.userService.getAvatar(this.user.avatarName).subscribe(file => {
-        const objectURL = URL.createObjectURL(file);
-        this.avatarUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-      }, error => {
-        console.error('Error loading avatar:', error);
-      });
+    loadAvatar(): void {
+      console.log('loadAvatar called'); // log
+      if (this.user && this.user.avatarName) {
+        this.userService.getAvatar(this.user.avatarName).subscribe({
+          next: (file: Blob) => {
+            const objectURL = URL.createObjectURL(file);
+            this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(objectURL) as string;
+          },
+          error: (error) => {
+            console.error('Error loading avatar:', error);
+          }
+        });
+      }
     }
-  }
     
     
   ngOnInit(): void {
@@ -58,6 +61,10 @@ export class UserLoginComponent implements OnInit {
               });
       }
   }
+  }
+
+  cancelEdit() :void{
+    this.editing = !this.editing;
   }
 
   logOff(): void{
@@ -79,6 +86,7 @@ export class UserLoginComponent implements OnInit {
         this.loggedIn = true;
         const userId: number = response.id;
         this.authService.login(userId); 
+        this.loadAvatar();
       } else {
         alert('login failed');
       }
